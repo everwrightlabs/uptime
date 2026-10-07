@@ -8,6 +8,10 @@ on:
     # GitHub turns off a public repo's schedules after 60 days without a commit.
     - cron: "17 3 1 * *"
   workflow_dispatch:
+    inputs:
+      sites:
+        description: "Addresses to check instead of SITES (to test the alarm)"
+        required: false
 permissions:
   contents: write
   issues: write
@@ -19,7 +23,7 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       # Down means the sign-in page does not answer. /health is reported but does not alert:
       # it also turns "degraded" when one board out of a thousand fails to refresh.
-      SITES: https://jobfinder.everwrightlabs.com/login
+      SITES: ${{ inputs.sites || 'https://jobfinder.everwrightlabs.com/login' }}
     steps:
       - name: check
         run: |
