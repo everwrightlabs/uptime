@@ -40,7 +40,7 @@ jobs:
           health=$(curl -s --max-time 20 https://jobfinder.everwrightlabs.com/health | head -c 1500 || true)
           open=$(gh issue list --repo "$GITHUB_REPOSITORY" --label down --state open --json number --jq '.[0].number // empty')
           if [ -n "$problems" ] && [ -z "$open" ]; then
-            gh issue create --repo "$GITHUB_REPOSITORY" --label down --title "Down: $(echo "$problems" | head -1 | cut -c3-60)" \
+            gh issue create --repo "$GITHUB_REPOSITORY" --label down --title "Down: $(echo "$problems" | head -1 | cut -d/ -f3)" \
               --body "$(printf 'Checked %s UTC from GitHub.\n\n%s\n/health said:\n```\n%s\n```\n' "$(date -u '+%F %T')" "$problems" "$health")"
           elif [ -z "$problems" ] && [ -n "$open" ]; then
             gh issue close "$open" --repo "$GITHUB_REPOSITORY" --comment "Answering again at $(date -u '+%F %T') UTC."
